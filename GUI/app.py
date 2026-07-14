@@ -1,43 +1,69 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import os
 
-# Load model
-model = joblib.load("models/models/house_prediction.pkl")
+# -----------------------------
+# Get project root directory
+# -----------------------------
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Load dataset
-df = pd.read_csv("data/housing.csv")
+# -----------------------------
+# Load Model
+# -----------------------------
+model_path = os.path.join(BASE_DIR, "models", "house_prediction.pkl")
+model = joblib.load(model_path)
 
-st.title("🏠 House Price Prediction")
+# -----------------------------
+# Load Dataset
+# -----------------------------
+data_path = os.path.join(BASE_DIR, "data", "hyderabad_house_dataset_2026.csv")
+df = pd.read_csv(data_path)
 
-# Location dropdown
+# -----------------------------
+# Streamlit UI
+# -----------------------------
+st.set_page_config(page_title="Hyderabad House Price Prediction")
+
+st.title("🏠 Hyderabad House Price Prediction")
+st.write("Enter the house details to predict the estimated price.")
+
+# -----------------------------
+# Location
+# -----------------------------
 location = st.selectbox(
     "Select Location",
     sorted(df["location"].unique())
 )
 
+# -----------------------------
 # Inputs
+# -----------------------------
 area = st.number_input(
     "Area (sq ft)",
     min_value=500,
-    max_value=10000,
-    value=1500
+    max_value=6000,
+    value=1500,
+    step=100
 )
 
 bhk = st.number_input(
     "BHK",
     min_value=1,
-    max_value=10,
-    value=2
+    max_value=6,
+    value=3
 )
 
 bath = st.number_input(
     "Bathrooms",
     min_value=1,
-    max_value=10,
+    max_value=6,
     value=2
 )
 
+# -----------------------------
+# Prediction
+# -----------------------------
 if st.button("Predict Price"):
 
     input_data = pd.DataFrame({
@@ -47,6 +73,6 @@ if st.button("Predict Price"):
         "bath": [bath]
     })
 
-    price = model.predict(input_data)[0]
+    predicted_price = model.predict(input_data)[0]
 
-    st.success(f"Estimated House Price: ₹ {price:,.0f}")
+    st.success(f"Estimated House Price: ₹ {predicted_price:,.0f}")
