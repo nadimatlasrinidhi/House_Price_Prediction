@@ -17,7 +17,7 @@ model = joblib.load(model_path)
 # -----------------------------
 # Load Dataset
 # -----------------------------
-data_path = os.path.join(BASE_DIR, "data", "hyderabad_house_dataset_2026.csv")
+data_path = os.path.join(BASE_DIR, "data", "housing.csv")
 df = pd.read_csv(data_path)
 
 # -----------------------------
